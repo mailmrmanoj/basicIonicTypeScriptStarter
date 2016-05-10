@@ -23,13 +23,9 @@ var AngularAttack;
 /// <reference path="../types/jquery/jquery.d.ts" />
 /// <reference path="../types/angularjs/angular.d.ts" />
 /// <reference path="../types/angular-ui-router/angular-ui-router.d.ts" />
-/// <reference path="../types/jasmine/jasmine.d.ts" />
 /// <reference path="../types/jqueryui/jqueryui.d.ts" />
 /// <reference path="../types/lodash/lodash.d.ts" />
 /// <reference path="../types/restangular/restangular.d.ts" />
-/// <reference path="../types/moment/moment.d.ts" />
-/// <reference path="../types/moment-timezone/moment-timezone.d.ts" />
-/// <reference path="../types/leaflet/leaflet.d.ts" /> 
 ///<reference path="Reference.ts"/>
 var AngularAttack;
 (function (AngularAttack) {
@@ -244,9 +240,35 @@ var AngularAttack;
     (function (Controllers) {
         var AccountCtrl = (function () {
             function AccountCtrl($scope, $document) {
-                $scope.showAdvancedSerach = true;
-                $scope.settings = {
-                    enableFriends: true
+                $scope.data = {
+                    speechText: ''
+                };
+                $scope.recognizedText = '';
+                // $scope.speakText = function () {
+                //     TTS.speak({
+                //         text: $scope.data.speechText,
+                //         locale: 'en-GB',
+                //         rate: 1.5
+                //     }, function () {
+                //         // Do Something after success
+                //     }, function (reason) {
+                //         // Handle the error case
+                //     });
+                // };
+                $scope.record = function () {
+                    //var recognition = new webkitSpeechRecognition(); //To Computer
+                    $scope.showLoader = true;
+                    var recognition = new SpeechRecognition(); // To Device
+                    recognition.lang = 'en-GB';
+                    recognition.onresult = function (event) {
+                        if (event.results.length > 0) {
+                            $scope.recognizedText = event.results[0][0].transcript;
+                            alert($scope.recognizedText);
+                            $scope.showLoader = false;
+                            $scope.$apply();
+                        }
+                    };
+                    recognition.start();
                 };
             }
             AccountCtrl.$inject = ["$scope", "$document"];
