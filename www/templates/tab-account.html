@@ -18,16 +18,20 @@
       <div class="col col-50"> </div>
       <div class="col">
         <i class="icon ion-mic-a text-center" ng-click="record()"></i>
-          <ion-spinner icon="ripple" ng-show="showLoader"" class="spinner-assertive"></ion-spinner>
+        <ion-spinner icon="ripple" ng-show="showLoader" " class="spinner-assertive "></ion-spinner>
 
       </div>
-      <div class="col"> </div>
+      <div class="col "> </div>
     </div>
-    <!--<ion-spinner icon="lines" class="spinner-assertive  text-center"></ion-spinner>-->
-
-    <div class="item item-text-wrap">
+    <!--<ion-spinner icon="lines " class="spinner-assertive text-center "></ion-spinner>-->
+<button id = "playAudio ">PLAY</button>
+    <div class="item item-text-wrap ">
       {{recognizedText}}
     </div>
+
+<button class="button button-calm" ng-click="getSpeech()">
+  Speak
+</button>
 
   </ion-content>
   </ion-pane>

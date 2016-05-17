@@ -255,12 +255,26 @@ var AngularAttack;
                 //         // Handle the error case
                 //     });
                 // };
+                document.addEventListener('deviceready', onDeviceReady, false);
+                function onDeviceReady() {
+                    $scope.recognition1 = new SpeechRecognition();
+                    alert($scope.recognition1);
+                    $scope.recognition1.onresult = function (event) {
+                        if (event.results.length > 0) {
+                            $scope.recognizedText = event.results[0][0].transcript;
+                            alert($scope.recognizedText);
+                        }
+                    };
+                }
                 $scope.record = function () {
-                    //var recognition = new webkitSpeechRecognition(); //To Computer
+                    var recognition = new webkitSpeechRecognition(); //To Computer
                     $scope.showLoader = true;
-                    var recognition = new SpeechRecognition(); // To Device
-                    recognition.lang = 'en-GB';
-                    recognition.onresult = function (event) {
+                    //   alert("test");
+                    document.addEventListener('deviceready', onDeviceReady, false);
+                    // var recognition = new SpeechRecognition(); // To Device
+                    $scope.recognition1.lang = 'en-GB';
+                    $scope.recognition1.onresult = function (event) {
+                        alert("success");
                         if (event.results.length > 0) {
                             $scope.recognizedText = event.results[0][0].transcript;
                             alert($scope.recognizedText);
@@ -268,7 +282,33 @@ var AngularAttack;
                             $scope.$apply();
                         }
                     };
-                    recognition.start();
+                    $scope.recognition1.start();
+                };
+                var recording = false;
+                var spokenInput = '';
+                $scope.getSpeech = function () {
+                    if (!recording) {
+                        recording = true;
+                        spokenInput = '';
+                        var recognition = new SpeechRecognition();
+                        recognition.onresult = function (event) {
+                            if (event.results.length > 0) {
+                                spokenInput = event.results[0][0].transcript;
+                            }
+                        };
+                        recognition.onend = function () {
+                            recording = false;
+                            if (spokenInput) {
+                                alert(spokenInput);
+                            }
+                            else {
+                                alert('For best results, try speaking immediately after the beep!');
+                            }
+                        };
+                        setTimeout(function () {
+                            recognition.stop();
+                        }, 6000); // Force stop  after 6 seconds
+                    }
                 };
             }
             AccountCtrl.$inject = ["$scope", "$document"];
