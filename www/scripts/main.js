@@ -69,12 +69,12 @@ var AngularAttack;
                     }
                 }
             })
-                .state('tab.account', {
-                url: '/account',
+                .state('tab.speech', {
+                url: '/speech',
                 views: {
-                    'tab-account': {
-                        templateUrl: 'templates/tab-account.html',
-                        controller: 'AccountCtrl'
+                    'tab-speech': {
+                        templateUrl: 'templates/tab-speech.html',
+                        controller: 'SpeechCtrl'
                     }
                 }
             });
@@ -238,90 +238,36 @@ var AngularAttack;
 (function (AngularAttack) {
     var Controllers;
     (function (Controllers) {
-        var AccountCtrl = (function () {
-            function AccountCtrl($scope, $document) {
-                $scope.data = {
-                    speechText: ''
-                };
-                $scope.recognizedText = '';
-                // $scope.speakText = function () {
-                //     TTS.speak({
-                //         text: $scope.data.speechText,
-                //         locale: 'en-GB',
-                //         rate: 1.5
-                //     }, function () {
-                //         // Do Something after success
-                //     }, function (reason) {
-                //         // Handle the error case
-                //     });
-                // };
-                document.addEventListener('deviceready', onDeviceReady, false);
-                function onDeviceReady() {
-                    $scope.recognition1 = new SpeechRecognition();
-                    alert($scope.recognition1);
-                    $scope.recognition1.onresult = function (event) {
-                        if (event.results.length > 0) {
-                            $scope.recognizedText = event.results[0][0].transcript;
-                            alert($scope.recognizedText);
-                        }
-                    };
-                }
+        var SpeechCtrl = (function () {
+            function SpeechCtrl($scope, $document, $ionicLoading) {
                 $scope.record = function () {
-                    var recognition = new webkitSpeechRecognition(); //To Computer
-                    $scope.showLoader = true;
-                    //   alert("test");
-                    document.addEventListener('deviceready', onDeviceReady, false);
-                    // var recognition = new SpeechRecognition(); // To Device
-                    $scope.recognition1.lang = 'en-GB';
-                    $scope.recognition1.onresult = function (event) {
-                        alert("success");
+                    $ionicLoading.show({
+                        template: '<ion-spinner icon="lines"></ion-spinner><br>You can speak to me ! ...'
+                    });
+                    var recognition = new SpeechRecognition();
+                    recognition.onresult = function (event) {
                         if (event.results.length > 0) {
                             $scope.recognizedText = event.results[0][0].transcript;
-                            alert($scope.recognizedText);
-                            $scope.showLoader = false;
                             $scope.$apply();
+                            $ionicLoading.hide().then(function () {
+                                console.log("The loading indicator is now hidden");
+                            });
                         }
                     };
-                    $scope.recognition1.start();
-                };
-                var recording = false;
-                var spokenInput = '';
-                $scope.getSpeech = function () {
-                    if (!recording) {
-                        recording = true;
-                        spokenInput = '';
-                        var recognition = new SpeechRecognition();
-                        recognition.onresult = function (event) {
-                            if (event.results.length > 0) {
-                                spokenInput = event.results[0][0].transcript;
-                            }
-                        };
-                        recognition.onend = function () {
-                            recording = false;
-                            if (spokenInput) {
-                                alert(spokenInput);
-                            }
-                            else {
-                                alert('For best results, try speaking immediately after the beep!');
-                            }
-                        };
-                        setTimeout(function () {
-                            recognition.stop();
-                        }, 6000); // Force stop  after 6 seconds
-                    }
+                    recognition.start();
                 };
             }
-            AccountCtrl.$inject = ["$scope", "$document"];
-            return AccountCtrl;
+            SpeechCtrl.$inject = ["$scope", "$document", "$ionicLoading"];
+            return SpeechCtrl;
         }());
-        Controllers.AccountCtrl = AccountCtrl;
+        Controllers.SpeechCtrl = SpeechCtrl;
     })(Controllers = AngularAttack.Controllers || (AngularAttack.Controllers = {}));
 })(AngularAttack || (AngularAttack = {}));
 ///<reference path="../Reference.ts"/>
 ///<reference path="DashCtrl.ts"/>
 ///<reference path="ChatsCtrl.ts"/>
 ///<reference path="ChatDetailCtrl.ts"/>
-///<reference path="AccountCtrl.ts"/>
+///<reference path="SpeechCtrl.ts"/>
 ///<reference path="Reference.ts"/>
 var AngularAttack;
 (function (AngularAttack) {

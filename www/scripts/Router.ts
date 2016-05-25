@@ -45,12 +45,12 @@ module AngularAttack {
                     }
                 })
 
-                .state('tab.account', {
-                    url: '/account',
+                .state('tab.speech', {
+                    url: '/speech',
                     views: {
-                        'tab-account': {
-                            templateUrl: 'templates/tab-account.html',
-                            controller: 'AccountCtrl'
+                        'tab-speech': {
+                            templateUrl: 'templates/tab-speech.html',
+                            controller: 'SpeechCtrl'
                         }
                     }
                 });
