@@ -184,11 +184,6 @@ var AngularAttack;
     (function (Controllers) {
         var MainCtrl = (function () {
             function MainCtrl($scope, $document, $ionicSideMenuDelegate) {
-                $scope.languages = [
-                    { name: 'English' },
-                    { name: 'Hindi' },
-                    { name: 'Kannada' },
-                ];
                 $scope.toggleLeft = function () {
                     $ionicSideMenuDelegate.toggleLeft();
                 };
@@ -211,15 +206,12 @@ var AngularAttack;
                     { name: 'Hindi' },
                     { name: 'Kannada' },
                 ];
-                $scope.activity = [];
-                $scope.arrivedChange = function (attendee) {
-                    var msg = attendee.firstname + ' ' + attendee.lastname;
-                    msg += (!attendee.arrived ? ' has arrived, ' : ' just left, ');
-                    msg += new Date().getMilliseconds();
-                    $scope.activity.push(msg);
-                    if ($scope.activity.length > 3) {
-                        $scope.activity.splice(0, 1);
-                    }
+                $scope.updateSelection = function (position, entities, selectedLanguage) {
+                    alert(selectedLanguage);
+                    angular.forEach(entities, function (item, index) {
+                        if (position != index)
+                            item.checked = false;
+                    });
                 };
             }
             LanguagesCtrl.$inject = ["$scope", "Chats"];

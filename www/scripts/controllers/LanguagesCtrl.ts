@@ -9,10 +9,12 @@ module AngularAttack.Controllers {
                 { name: 'Hindi' },
                 { name: 'Kannada' },
             ];
-            $scope.activity = [];
-            $scope.setLanguage = function (language: any) {
-               
-            };
+            $scope.updateSelection = function (position:any, entities:any,selectedLanguage:any) {
+                  angular.forEach(entities, function (item, index) {
+                    if (position != index)
+                        item.checked = false;
+                });
+            }
 
         }
     }

@@ -137,7 +137,7 @@
       <ion-content>
         <div class="list">
              <ion-toggle ng-repeat="item in languages"
-                    ng-model="item.checked" 
+                    ng-model="item.checked"    ng-click="updateSelection($index, languages,item.name)"
                     ng-checked="item.checked">
           {{ item.name }}
         </ion-toggle>           
