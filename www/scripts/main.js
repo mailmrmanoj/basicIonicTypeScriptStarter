@@ -207,7 +207,6 @@ var AngularAttack;
                     { name: 'Kannada' },
                 ];
                 $scope.updateSelection = function (position, entities, selectedLanguage) {
-                    alert(selectedLanguage);
                     angular.forEach(entities, function (item, index) {
                         if (position != index)
                             item.checked = false;
@@ -255,23 +254,34 @@ var AngularAttack;
     var Controllers;
     (function (Controllers) {
         var SpeechCtrl = (function () {
-            function SpeechCtrl($scope, $document, $ionicLoading, $ionicPopup) {
+            function SpeechCtrl($scope, $timeout, $ionicLoading, $ionicPopup) {
                 $scope.recognizedText = '';
+                function callAtTimeout() {
+                    if ($scope.recognizedText.length <= 0) {
+                        $ionicLoading.hide().then(function () {
+                            console.log("The loading indicator is now hidden");
+                        });
+                    }
+                }
                 $scope.record = function () {
                     $ionicLoading.show({
                         templateUrl: "templates/loading.html",
                         animation: 'fade-in'
                     });
-                    var recognition = new SpeechRecognition();
+                    // var recognition = new SpeechRecognition(); //on computer
+                    var recognition = new webkitSpeechRecognition(); //on device
                     recognition.lang = 'es-GB'; //Englisg UK
+                    // recognition.lang = 'hi-IN';//Hindi IN
                     recognition.onresult = function (event) {
                         if (event.results.length > 0) {
                             $scope.recognizedText = event.results[0][0].transcript;
+                            alert($scope.recognizedText);
                             $scope.$apply();
                             showAlert(event.results[0][0].transcript);
                         }
                     };
                     recognition.start();
+                    $timeout(callAtTimeout, 5000);
                 };
                 function showAlert(text) {
                     $ionicLoading.hide().then(function () {
@@ -288,7 +298,7 @@ var AngularAttack;
                 }
                 ;
             }
-            SpeechCtrl.$inject = ["$scope", "$document", "$ionicLoading"];
+            SpeechCtrl.$inject = ["$scope", "$timeout", "$ionicLoading"];
             return SpeechCtrl;
         }());
         Controllers.SpeechCtrl = SpeechCtrl;
@@ -387,11 +397,5 @@ var AngularAttack;
     ;
     new App();
 })(AngularAttack || (AngularAttack = {}));
-// Date.prototype.yyyymmdd = function () {
-//     var yyyy = this.getFullYear().toString();
-//     var mm = (this.getMonth() + 1).toString(); // getMonth() is zero-based
-//     var dd = this.getDate().toString();
-//     return yyyy + '-' + (mm[1] ? mm : "0" + mm[0]) + '-' + (dd[1] ? dd : "0" + dd[0]); // padding
-// }; 
 ///<reference path="Reference.ts"/>
 angular.module(AngularAttack.AngularAttackConstants.CONTROLLERS, []).controller(AngularAttack.Controllers);

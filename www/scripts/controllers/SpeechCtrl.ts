@@ -2,25 +2,39 @@
 module AngularAttack.Controllers {
     import globalConstants = AngularAttack.AngularAttackConstants;
     export class SpeechCtrl {
-        static $inject = ["$scope", "$document", "$ionicLoading"];
-        constructor($scope: any, $document: any, $ionicLoading: any,$ionicPopup:any) {
+        static $inject = ["$scope", "$timeout", "$ionicLoading"];
+        constructor($scope: any, $timeout:any, $ionicLoading: any,$ionicPopup:any) {
             $scope.recognizedText = '';
-            $scope.record = function () {
+             
+            function callAtTimeout() {
+                if($scope.recognizedText.length<=0){
+                    $ionicLoading.hide().then(function(){
+                        console.log("The loading indicator is now hidden");
+                        });
+                      }
+                   }
+ 
+            $scope.record = function (){
                 $ionicLoading.show({
                     templateUrl: "templates/loading.html",
                     animation: 'fade-in'
                 });
                
-                var recognition = new SpeechRecognition();
-                recognition.lang = 'es-GB';//Englisg UK
+               // var recognition = new SpeechRecognition(); //on computer
+                var  recognition = new webkitSpeechRecognition ();//on device
+                  recognition.lang = 'es-GB';//Englisg UK
+               // recognition.lang = 'hi-IN';//Hindi IN
                 recognition.onresult = function (event:any) {
                     if (event.results.length > 0) {
                         $scope.recognizedText = event.results[0][0].transcript;
-                        $scope.$apply()
+                        alert($scope.recognizedText);
+                         $scope.$apply()
                         showAlert(event.results[0][0].transcript);
                     }
                 };
                 recognition.start();
+                $timeout(callAtTimeout, 5000);
+
             };
              function showAlert(text:any) {
                 $ionicLoading.hide().then(function () {
