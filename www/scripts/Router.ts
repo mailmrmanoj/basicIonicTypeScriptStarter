@@ -1,63 +1,52 @@
 ///<reference path="Reference.ts"/>
 module AngularAttack {
-    // interface IRouter {
-    //     initialize: ($stateProvider, $urlRouteProvider) => void;
-    // }
-    export class Router implements AngularAttack.IRouter {
-        initialize($stateProvider: any, $urlRouteProvider: any) {
-            $stateProvider
-                //region common navigation
-                // setup an abstract state for the tabs directive
-                .state('tab', {
-                    url: '/tab',
-                    abstract: true,
-                    templateUrl: 'templates/tabs.html'
-                })
+  // interface IRouter {
+  //     initialize: ($stateProvider, $urlRouteProvider) => void;
+  // }
+  export class Router implements AngularAttack.IRouter {
+    initialize($stateProvider: any, $urlRouteProvider: any) {
+      $stateProvider
 
-                // Each tab has its own nav history stack:
+      $stateProvider
+        .state('eventmenu', {
+          url: "/event",
+          abstract: true,
+          templateUrl: "templates/event-menu.html",
+          controller: "MainCtrl"
 
-                .state('tab.dash', {
-                    url: '/dash',
-                    views: {
-                        'tab-dash': {
-                            templateUrl: 'templates/tab-dash.html',
-                            controller: 'DashCtrl'
-                        }
-                    }
-                })
+        })
+        .state('eventmenu.home', {
+          url: "/home",
+          views: {
+            'menuContent': {
+              templateUrl: "templates/home.html",
+              controller: "SpeechCtrl"
 
-                .state('tab.chats', {
-                    url: '/chats',
-                    views: {
-                        'tab-chats': {
-                            templateUrl: 'templates/tab-chats.html',
-                            controller: 'ChatsCtrl'
-                        }
-                    }
-                })
-                .state('tab.chat-detail', {
-                    url: '/chats/:chatId',
-                    views: {
-                        'tab-chats': {
-                            templateUrl: 'templates/chat-detail.html',
-                            controller: 'ChatDetailCtrl'
-                        }
-                    }
-                })
+            }
+          }
+        })
+        .state('eventmenu.checkin', {
+          url: "/check-in",
+          views: {
+            'menuContent': {
+              templateUrl: "templates/check-in.html",
+              controller: "CheckinCtrl"
+            }
+          }
+        })
+        .state('eventmenu.languages', {
+          url: "/languages",
+          views: {
+            'menuContent': {
+              templateUrl: "templates/languages.html",
+              controller: "LanguagesCtrl"
+            }
+          }
+        })
 
-                .state('tab.speech', {
-                    url: '/speech',
-                    views: {
-                        'tab-speech': {
-                            templateUrl: 'templates/tab-speech.html',
-                            controller: 'SpeechCtrl'
-                        }
-                    }
-                });
-            // if none of the above states are matched, use this as the fallback
-            $urlRouteProvider.otherwise('/tab/dash');
 
-            //endregion
-        }
+      $urlRouteProvider.otherwise("/event/home");
+      //endregion
     }
+  }
 }

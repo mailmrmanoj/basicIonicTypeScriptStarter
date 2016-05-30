@@ -36,50 +36,42 @@ var AngularAttack;
         function Router() {
         }
         Router.prototype.initialize = function ($stateProvider, $urlRouteProvider) {
+            $stateProvider;
             $stateProvider
-                .state('tab', {
-                url: '/tab',
+                .state('eventmenu', {
+                url: "/event",
                 abstract: true,
-                templateUrl: 'templates/tabs.html'
+                templateUrl: "templates/event-menu.html",
+                controller: "MainCtrl"
             })
-                .state('tab.dash', {
-                url: '/dash',
+                .state('eventmenu.home', {
+                url: "/home",
                 views: {
-                    'tab-dash': {
-                        templateUrl: 'templates/tab-dash.html',
-                        controller: 'DashCtrl'
+                    'menuContent': {
+                        templateUrl: "templates/home.html",
+                        controller: "SpeechCtrl"
                     }
                 }
             })
-                .state('tab.chats', {
-                url: '/chats',
+                .state('eventmenu.checkin', {
+                url: "/check-in",
                 views: {
-                    'tab-chats': {
-                        templateUrl: 'templates/tab-chats.html',
-                        controller: 'ChatsCtrl'
+                    'menuContent': {
+                        templateUrl: "templates/check-in.html",
+                        controller: "CheckinCtrl"
                     }
                 }
             })
-                .state('tab.chat-detail', {
-                url: '/chats/:chatId',
+                .state('eventmenu.languages', {
+                url: "/languages",
                 views: {
-                    'tab-chats': {
-                        templateUrl: 'templates/chat-detail.html',
-                        controller: 'ChatDetailCtrl'
-                    }
-                }
-            })
-                .state('tab.speech', {
-                url: '/speech',
-                views: {
-                    'tab-speech': {
-                        templateUrl: 'templates/tab-speech.html',
-                        controller: 'SpeechCtrl'
+                    'menuContent': {
+                        templateUrl: "templates/languages.html",
+                        controller: "LanguagesCtrl"
                     }
                 }
             });
-            // if none of the above states are matched, use this as the fallback
-            $urlRouteProvider.otherwise('/tab/dash');
+            $urlRouteProvider.otherwise("/event/home");
             //endregion
         };
         return Router;
@@ -190,32 +182,21 @@ var AngularAttack;
 (function (AngularAttack) {
     var Controllers;
     (function (Controllers) {
-        var DashCtrl = (function () {
-            function DashCtrl($scope, $document) {
-                $scope.message = "Hello";
-            }
-            DashCtrl.$inject = ["$scope", "$document"];
-            return DashCtrl;
-        }());
-        Controllers.DashCtrl = DashCtrl;
-    })(Controllers = AngularAttack.Controllers || (AngularAttack.Controllers = {}));
-})(AngularAttack || (AngularAttack = {}));
-///<reference path="Reference.ts"/>
-var AngularAttack;
-(function (AngularAttack) {
-    var Controllers;
-    (function (Controllers) {
-        var ChatsCtrl = (function () {
-            function ChatsCtrl($scope, Chats) {
-                $scope.chats = Chats.all();
-                $scope.remove = function (chat) {
-                    Chats.remove(chat);
+        var MainCtrl = (function () {
+            function MainCtrl($scope, $document, $ionicSideMenuDelegate) {
+                $scope.languages = [
+                    { name: 'English' },
+                    { name: 'Hindi' },
+                    { name: 'Kannada' },
+                ];
+                $scope.toggleLeft = function () {
+                    $ionicSideMenuDelegate.toggleLeft();
                 };
             }
-            ChatsCtrl.$inject = ["$scope", "Chats"];
-            return ChatsCtrl;
+            MainCtrl.$inject = ["$scope", "$document", "$ionicSideMenuDelegate"];
+            return MainCtrl;
         }());
-        Controllers.ChatsCtrl = ChatsCtrl;
+        Controllers.MainCtrl = MainCtrl;
     })(Controllers = AngularAttack.Controllers || (AngularAttack.Controllers = {}));
 })(AngularAttack || (AngularAttack = {}));
 ///<reference path="Reference.ts"/>
@@ -223,14 +204,57 @@ var AngularAttack;
 (function (AngularAttack) {
     var Controllers;
     (function (Controllers) {
-        var ChatDetailCtrl = (function () {
-            function ChatDetailCtrl($scope, $stateParams, Chats) {
-                $scope.chat = Chats.get($stateParams.chatId);
+        var LanguagesCtrl = (function () {
+            function LanguagesCtrl($scope, Chats) {
+                $scope.languages = [
+                    { name: 'English' },
+                    { name: 'Hindi' },
+                    { name: 'Kannada' },
+                ];
+                $scope.activity = [];
+                $scope.arrivedChange = function (attendee) {
+                    var msg = attendee.firstname + ' ' + attendee.lastname;
+                    msg += (!attendee.arrived ? ' has arrived, ' : ' just left, ');
+                    msg += new Date().getMilliseconds();
+                    $scope.activity.push(msg);
+                    if ($scope.activity.length > 3) {
+                        $scope.activity.splice(0, 1);
+                    }
+                };
             }
-            ChatDetailCtrl.$inject = ["$scope", "$stateParams", "Chats"];
-            return ChatDetailCtrl;
+            LanguagesCtrl.$inject = ["$scope", "Chats"];
+            return LanguagesCtrl;
         }());
-        Controllers.ChatDetailCtrl = ChatDetailCtrl;
+        Controllers.LanguagesCtrl = LanguagesCtrl;
+    })(Controllers = AngularAttack.Controllers || (AngularAttack.Controllers = {}));
+})(AngularAttack || (AngularAttack = {}));
+///<reference path="Reference.ts"/>
+var AngularAttack;
+(function (AngularAttack) {
+    var Controllers;
+    (function (Controllers) {
+        var CheckinCtrl = (function () {
+            function CheckinCtrl($scope, $stateParams, Chats) {
+                $scope.showForm = true;
+                $scope.shirtSizes = [
+                    { text: 'Large', value: 'L' },
+                    { text: 'Medium', value: 'M' },
+                    { text: 'Small', value: 'S' }
+                ];
+                $scope.attendee = {};
+                $scope.submit = function () {
+                    if (!$scope.attendee.firstname) {
+                        alert('Info required');
+                        return;
+                    }
+                    $scope.showForm = false;
+                    $scope.attendees.push($scope.attendee);
+                };
+            }
+            CheckinCtrl.$inject = ["$scope", "$stateParams", "Chats"];
+            return CheckinCtrl;
+        }());
+        Controllers.CheckinCtrl = CheckinCtrl;
     })(Controllers = AngularAttack.Controllers || (AngularAttack.Controllers = {}));
 })(AngularAttack || (AngularAttack = {}));
 ///<reference path="Reference.ts"/>
@@ -239,23 +263,38 @@ var AngularAttack;
     var Controllers;
     (function (Controllers) {
         var SpeechCtrl = (function () {
-            function SpeechCtrl($scope, $document, $ionicLoading) {
+            function SpeechCtrl($scope, $document, $ionicLoading, $ionicPopup) {
+                $scope.recognizedText = '';
                 $scope.record = function () {
                     $ionicLoading.show({
-                        template: '<ion-spinner icon="lines"></ion-spinner><br>You can speak to me ! ...'
+                        templateUrl: "templates/loading.html",
+                        animation: 'fade-in'
                     });
                     var recognition = new SpeechRecognition();
+                    recognition.lang = 'es-GB'; //Englisg UK
                     recognition.onresult = function (event) {
                         if (event.results.length > 0) {
                             $scope.recognizedText = event.results[0][0].transcript;
                             $scope.$apply();
-                            $ionicLoading.hide().then(function () {
-                                console.log("The loading indicator is now hidden");
-                            });
+                            showAlert(event.results[0][0].transcript);
                         }
                     };
                     recognition.start();
                 };
+                function showAlert(text) {
+                    $ionicLoading.hide().then(function () {
+                        console.log("The loading indicator is now hidden");
+                    });
+                    var alertPopup = $ionicPopup.alert({
+                        title: 'Hey there!',
+                        template: 'You just said ' + '<span class="boldText">' + '"' + text + '"' + '</span>' + '!!',
+                        noBackdrop: true
+                    });
+                    alertPopup.then(function (res) {
+                        console.log('Thank you');
+                    });
+                }
+                ;
             }
             SpeechCtrl.$inject = ["$scope", "$document", "$ionicLoading"];
             return SpeechCtrl;
@@ -264,9 +303,9 @@ var AngularAttack;
     })(Controllers = AngularAttack.Controllers || (AngularAttack.Controllers = {}));
 })(AngularAttack || (AngularAttack = {}));
 ///<reference path="../Reference.ts"/>
-///<reference path="DashCtrl.ts"/>
-///<reference path="ChatsCtrl.ts"/>
-///<reference path="ChatDetailCtrl.ts"/>
+///<reference path="MainCtrl.ts"/>
+/// <reference path="LanguagesCtrl.ts"/> 
+///<reference path="CheckinCtrl.ts"/>
 ///<reference path="SpeechCtrl.ts"/>
 ///<reference path="Reference.ts"/>
 var AngularAttack;

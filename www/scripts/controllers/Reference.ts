@@ -1,5 +1,5 @@
 ///<reference path="../Reference.ts"/>
-///<reference path="DashCtrl.ts"/>
-///<reference path="ChatsCtrl.ts"/>
-///<reference path="ChatDetailCtrl.ts"/>
+///<reference path="MainCtrl.ts"/>
+/// <reference path="LanguagesCtrl.ts"/> 
+///<reference path="CheckinCtrl.ts"/>
 ///<reference path="SpeechCtrl.ts"/>
