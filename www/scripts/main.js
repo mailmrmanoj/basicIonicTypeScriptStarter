@@ -268,8 +268,8 @@ var AngularAttack;
                         templateUrl: "templates/loading.html",
                         animation: 'fade-in'
                     });
-                    // var recognition = new SpeechRecognition(); //on computer
-                    var recognition = new webkitSpeechRecognition(); //on device
+                    var recognition = new SpeechRecognition(); //on computer
+                    //var  recognition = new webkitSpeechRecognition ();//on device
                     recognition.lang = 'es-GB'; //Englisg UK
                     // recognition.lang = 'hi-IN';//Hindi IN
                     recognition.onresult = function (event) {
