@@ -2,8 +2,8 @@
 module AngularAttack.Controllers {
     import globalConstants = AngularAttack.AngularAttackConstants;
     export class SpeechCtrl {
-        static $inject = ["$scope", "$timeout", "$ionicLoading", "GetterSetterService"];
-        constructor($scope: any, $timeout: any, $ionicLoading: any, $ionicPopup: any, GetterSetterService: any) {
+        static $inject = ["$scope", "$timeout", "GetterSetterService", "$ionicLoading", "$ionicPopup"];
+        constructor($scope: any, $timeout: any, GetterSetterService: any, $ionicLoading: any, $ionicPopup: any) {
             $scope.recognizedText = '';
 
             function callAtTimeout() {
@@ -19,20 +19,22 @@ module AngularAttack.Controllers {
                     templateUrl: "templates/loading.html",
                     animation: 'fade-in'
                 });
-
+                   var recognition = new SpeechRecognition(); //on computer
+               // var recognition = new webkitSpeechRecognition();//on device
                 var selectedLanguage = GetterSetterService.getXxx();
-                if (selectedLanguage) {
-                    alert(selectedLanguage);
+                if (typeof (selectedLanguage) === "string") {
+                    if (selectedLanguage == "Hindi") {
+                        recognition.lang = 'hi-IN';//Hindi IN
+                    } else if (selectedLanguage == "English")
+                        recognition.lang = 'es-GB';//Englisg UK
+                } else {
+                    recognition.lang = 'es-GB';//Englisg UK
                 }
 
-               // var recognition = new SpeechRecognition(); //on computer
-                 var  recognition = new webkitSpeechRecognition ();//on device
-                recognition.lang = 'es-GB';//Englisg UK
-                // recognition.lang = 'hi-IN';//Hindi IN
+
                 recognition.onresult = function (event: any) {
                     if (event.results.length > 0) {
                         $scope.recognizedText = event.results[0][0].transcript;
-                        alert($scope.recognizedText);
                         $scope.$apply()
                         showAlert(event.results[0][0].transcript);
                     }

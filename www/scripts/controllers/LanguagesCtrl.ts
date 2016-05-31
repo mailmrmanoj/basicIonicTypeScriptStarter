@@ -13,13 +13,17 @@ module AngularAttack.Controllers {
                     if (position != index)
                         item.checked = false;
                 });
-                for (var i = 0; i < entities.length; i++) {
-                    if (entities[i].checked == true) {
-                        var isSelected = entities[i];
-                        return isSelected;
+
+                var isSelected = getSelectedLanuage(entities);
+                GetterSetterService.setXxx(isSelected.name);
+                function getSelectedLanuage(entities: any) {
+                    for (var i = 0; i < entities.length; i++) {
+                        if (entities[i].checked == true) {
+                            var isSelected = entities[i];
+                            return isSelected;
+                        }
                     }
                 }
-                GetterSetterService.setXxx(selectedLanguage);
             }
         }
     }

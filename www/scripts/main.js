@@ -210,13 +210,16 @@ var AngularAttack;
                         if (position != index)
                             item.checked = false;
                     });
-                    for (var i = 0; i < entities.length; i++) {
-                        if (entities[i].checked == true) {
-                            var isSelected = entities[i];
-                            return isSelected;
+                    var isSelected = getSelectedLanuage(entities);
+                    GetterSetterService.setXxx(isSelected.name);
+                    function getSelectedLanuage(entities) {
+                        for (var i = 0; i < entities.length; i++) {
+                            if (entities[i].checked == true) {
+                                var isSelected = entities[i];
+                                return isSelected;
+                            }
                         }
                     }
-                    GetterSetterService.setXxx(selectedLanguage);
                 };
             }
             LanguagesCtrl.$inject = ["$scope", "GetterSetterService"];
@@ -260,7 +263,7 @@ var AngularAttack;
     var Controllers;
     (function (Controllers) {
         var SpeechCtrl = (function () {
-            function SpeechCtrl($scope, $timeout, $ionicLoading, $ionicPopup, GetterSetterService) {
+            function SpeechCtrl($scope, $timeout, GetterSetterService, $ionicLoading, $ionicPopup) {
                 $scope.recognizedText = '';
                 function callAtTimeout() {
                     if ($scope.recognizedText.length <= 0) {
@@ -274,18 +277,22 @@ var AngularAttack;
                         templateUrl: "templates/loading.html",
                         animation: 'fade-in'
                     });
+                    var recognition = new SpeechRecognition(); //on computer
+                    // var recognition = new webkitSpeechRecognition();//on device
                     var selectedLanguage = GetterSetterService.getXxx();
-                    if (selectedLanguage) {
-                        alert(selectedLanguage);
+                    if (typeof (selectedLanguage) === "string") {
+                        if (selectedLanguage == "Hindi") {
+                            recognition.lang = 'hi-IN'; //Hindi IN
+                        }
+                        else if (selectedLanguage == "English")
+                            recognition.lang = 'es-GB'; //Englisg UK
                     }
-                    // var recognition = new SpeechRecognition(); //on computer
-                    var recognition = new webkitSpeechRecognition(); //on device
-                    recognition.lang = 'es-GB'; //Englisg UK
-                    // recognition.lang = 'hi-IN';//Hindi IN
+                    else {
+                        recognition.lang = 'es-GB'; //Englisg UK
+                    }
                     recognition.onresult = function (event) {
                         if (event.results.length > 0) {
                             $scope.recognizedText = event.results[0][0].transcript;
-                            alert($scope.recognizedText);
                             $scope.$apply();
                             showAlert(event.results[0][0].transcript);
                         }
@@ -308,7 +315,7 @@ var AngularAttack;
                 }
                 ;
             }
-            SpeechCtrl.$inject = ["$scope", "$timeout", "$ionicLoading", "GetterSetterService"];
+            SpeechCtrl.$inject = ["$scope", "$timeout", "GetterSetterService", "$ionicLoading", "$ionicPopup"];
             return SpeechCtrl;
         }());
         Controllers.SpeechCtrl = SpeechCtrl;
