@@ -2,8 +2,8 @@
 module AngularAttack.Controllers {
     import globalConstants = AngularAttack.AngularAttackConstants;
     export class SpeechCtrl {
-        static $inject = ["$scope", "$timeout", "$ionicLoading"];
-        constructor($scope: any, $timeout: any, $ionicLoading: any, $ionicPopup: any) {
+        static $inject = ["$scope", "$timeout", "$ionicLoading", "GetterSetterService"];
+        constructor($scope: any, $timeout: any, $ionicLoading: any, $ionicPopup: any, GetterSetterService: any) {
             $scope.recognizedText = '';
 
             function callAtTimeout() {
@@ -20,8 +20,13 @@ module AngularAttack.Controllers {
                     animation: 'fade-in'
                 });
 
-                var recognition = new SpeechRecognition(); //on computer
-                //var  recognition = new webkitSpeechRecognition ();//on device
+                var selectedLanguage = GetterSetterService.getXxx();
+                if (selectedLanguage) {
+                    alert(selectedLanguage);
+                }
+
+               // var recognition = new SpeechRecognition(); //on computer
+                 var  recognition = new webkitSpeechRecognition ();//on device
                 recognition.lang = 'es-GB';//Englisg UK
                 // recognition.lang = 'hi-IN';//Hindi IN
                 recognition.onresult = function (event: any) {

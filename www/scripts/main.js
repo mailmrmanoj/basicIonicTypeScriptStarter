@@ -200,20 +200,26 @@ var AngularAttack;
     var Controllers;
     (function (Controllers) {
         var LanguagesCtrl = (function () {
-            function LanguagesCtrl($scope, Chats) {
+            function LanguagesCtrl($scope, GetterSetterService) {
                 $scope.languages = [
-                    { name: 'English' },
-                    { name: 'Hindi' },
-                    { name: 'Kannada' },
+                    { name: 'English', checked: true },
+                    { name: 'Hindi', checked: false },
                 ];
                 $scope.updateSelection = function (position, entities, selectedLanguage) {
                     angular.forEach(entities, function (item, index) {
                         if (position != index)
                             item.checked = false;
                     });
+                    for (var i = 0; i < entities.length; i++) {
+                        if (entities[i].checked == true) {
+                            var isSelected = entities[i];
+                            return isSelected;
+                        }
+                    }
+                    GetterSetterService.setXxx(selectedLanguage);
                 };
             }
-            LanguagesCtrl.$inject = ["$scope", "Chats"];
+            LanguagesCtrl.$inject = ["$scope", "GetterSetterService"];
             return LanguagesCtrl;
         }());
         Controllers.LanguagesCtrl = LanguagesCtrl;
@@ -254,7 +260,7 @@ var AngularAttack;
     var Controllers;
     (function (Controllers) {
         var SpeechCtrl = (function () {
-            function SpeechCtrl($scope, $timeout, $ionicLoading, $ionicPopup) {
+            function SpeechCtrl($scope, $timeout, $ionicLoading, $ionicPopup, GetterSetterService) {
                 $scope.recognizedText = '';
                 function callAtTimeout() {
                     if ($scope.recognizedText.length <= 0) {
@@ -268,8 +274,12 @@ var AngularAttack;
                         templateUrl: "templates/loading.html",
                         animation: 'fade-in'
                     });
-                    var recognition = new SpeechRecognition(); //on computer
-                    //var  recognition = new webkitSpeechRecognition ();//on device
+                    var selectedLanguage = GetterSetterService.getXxx();
+                    if (selectedLanguage) {
+                        alert(selectedLanguage);
+                    }
+                    // var recognition = new SpeechRecognition(); //on computer
+                    var recognition = new webkitSpeechRecognition(); //on device
                     recognition.lang = 'es-GB'; //Englisg UK
                     // recognition.lang = 'hi-IN';//Hindi IN
                     recognition.onresult = function (event) {
@@ -298,7 +308,7 @@ var AngularAttack;
                 }
                 ;
             }
-            SpeechCtrl.$inject = ["$scope", "$timeout", "$ionicLoading"];
+            SpeechCtrl.$inject = ["$scope", "$timeout", "$ionicLoading", "GetterSetterService"];
             return SpeechCtrl;
         }());
         Controllers.SpeechCtrl = SpeechCtrl;
@@ -314,19 +324,28 @@ var AngularAttack;
 (function (AngularAttack) {
     var Services;
     (function (Services) {
-        var DemoService = (function () {
-            function DemoService() {
+        var GetterSetterService = (function () {
+            function GetterSetterService() {
+                var _xxx = {};
+                return {
+                    getXxx: function () {
+                        return _xxx;
+                    },
+                    setXxx: function (value) {
+                        _xxx = value;
+                    }
+                };
             }
-            DemoService.$inject = ["$injector"];
-            return DemoService;
+            GetterSetterService.$inject = ["$injector"];
+            return GetterSetterService;
         }());
-        Services.DemoService = DemoService;
+        Services.GetterSetterService = GetterSetterService;
     })(Services = AngularAttack.Services || (AngularAttack.Services = {}));
 })(AngularAttack || (AngularAttack = {}));
 ///<reference path="Reference.ts"/>
 angular.module(AngularAttack.AngularAttackConstants.SERVICES, []).service(AngularAttack.Services);
 ///<reference path="../Reference.ts"/>
-///<reference path="DemoService.ts"/>
+///<reference path="GetterSetterService.ts"/>
 ///<reference path="Services.ts"/>
 ///<reference path="Reference.ts"/>
 var AngularAttack;
