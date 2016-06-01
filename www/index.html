@@ -28,7 +28,17 @@
   <ion-nav-view></ion-nav-view>
 
   <script id="templates/home.html" type="text/ng-template">
-    <data-ng-include src="'templates/microPhone.html'"></data-ng-include>
+   <ion-view view-title="SpeakHue">
+    <div class="bar bar-header  bar-positive">
+        <h1 class="title">SpeakHue</h1>
+    </div>
+    <div class="cover">
+        <span class="icon microphone" ng-click="record()"></span>
+    </div>
+    <div class="item item-text-wrap">
+        {{recognizedText}}
+    </div>
+</ion-view>
   </script>
 
   <script id="templates/loading.html" type="text/ng-template">

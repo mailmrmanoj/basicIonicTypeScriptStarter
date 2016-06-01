@@ -267,9 +267,7 @@ var AngularAttack;
                 $scope.recognizedText = '';
                 function callAtTimeout() {
                     if ($scope.recognizedText.length <= 0) {
-                        $ionicLoading.hide().then(function () {
-                            console.log("The loading indicator is now hidden");
-                        });
+                        $ionicLoading.hide();
                     }
                 }
                 $scope.record = function () {

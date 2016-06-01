@@ -8,9 +8,7 @@ module AngularAttack.Controllers {
 
             function callAtTimeout() {
                 if ($scope.recognizedText.length <= 0) {
-                    $ionicLoading.hide().then(function () {
-                        console.log("The loading indicator is now hidden");
-                    });
+                    $ionicLoading.hide();
                 }
             }
 
@@ -30,7 +28,6 @@ module AngularAttack.Controllers {
                 } else {
                     recognition.lang = 'es-GB';//Englisg UK
                 }
-
 
                 recognition.onresult = function (event: any) {
                     if (event.results.length > 0) {
