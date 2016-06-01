@@ -299,9 +299,7 @@ var AngularAttack;
                     $timeout(callAtTimeout, 5000);
                 };
                 function showAlert(text) {
-                    $ionicLoading.hide().then(function () {
-                        console.log("The loading indicator is now hidden");
-                    });
+                    $ionicLoading.hide();
                     var alertPopup = $ionicPopup.alert({
                         title: 'Hey there!',
                         template: 'You just said ' + '<span class="boldText">' + '"' + text + '"' + '</span>' + '!!',

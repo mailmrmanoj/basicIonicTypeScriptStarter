@@ -41,9 +41,7 @@ module AngularAttack.Controllers {
 
             };
             function showAlert(text: any) {
-                $ionicLoading.hide().then(function () {
-                    console.log("The loading indicator is now hidden");
-                });
+                $ionicLoading.hide();
 
                 var alertPopup = $ionicPopup.alert({
                     title: 'Hey there!',
