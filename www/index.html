@@ -25,20 +25,19 @@
 </head>
 
 <body ng-app="angular.attack">
+
   <ion-nav-view></ion-nav-view>
 
   <script id="templates/home.html" type="text/ng-template">
-   <ion-view view-title="SpeakHue">
+    <!--<ion-view view-title="SpeakHue">
     <div class="bar bar-header  bar-positive">
         <h1 class="title">SpeakHue</h1>
     </div>
     <div class="cover">
         <span class="icon microphone" ng-click="record()"></span>
     </div>
-    <div class="item item-text-wrap">
-        {{recognizedText}}
-    </div>
-</ion-view>
+ 
+</ion-view>-->
   </script>
 
   <script id="templates/loading.html" type="text/ng-template">
@@ -49,19 +48,49 @@
     <data-ng-include src="'templates/navigation.html'"></data-ng-include>
   </script>
 
-  <script id="templates/check-in.html" type="text/ng-template">
-    <data-ng-include src="'templates/checkIn.html'"></data-ng-include>
-  </script>
-
   <script id="templates/languages.html" type="text/ng-template">
     <ion-view view-title="Choose language">
       <ion-content>
-        <div class="list"> 
-          <ion-toggle ng-repeat="item in languages" ng-model="item.checked"  ng-click="updateSelection($index, languages,item.name)"
+        <div class="list">
+          <ion-toggle ng-repeat="item in languages" ng-model="item.checked" ng-click="updateSelection($index, languages,item.name)"
             ng-checked="item.checked">
-            {{ item.name }}   
+            {{ item.name }}
           </ion-toggle>
         </div>
+      </ion-content>
+    </ion-view>
+  </script>
+
+  <script id="templates/check-in.html" type="text/ng-template">
+    <data-ng-include src="'templates/checkIn.html'"></data-ng-include>
+  </script>
+  <script id="templates/check-in.html" type="text/ng-template">
+    <ion-view title="About">
+      <div class="tabs-striped tabs-top tabs-background-stable">
+        <div class="tabs">
+          <a class="tab-item" ui-sref="eventmenu.checkin.auto">
+               Autoconnect
+              </a>
+          <a class="tab-item" ui-sref="eventmenu.checkin.manual">
+               Connect manually
+              </a>
+        </div>
+      </div>
+      <ui-view name="connect-hue"></ui-view>
+    </ion-view>
+  </script>
+
+  <script id="templates/about-auto.html" type="text/ng-template">
+    <ion-view title="About Page 1">
+      <ion-content class="padding has-tabs-top">
+        About Page 1
+      </ion-content>
+    </ion-view>
+  </script>
+  <script id="templates/about-manual.html" type="text/ng-template">
+    <ion-view title="About Page 2">
+      <ion-content class="padding has-tabs-top">
+        About Page 2
       </ion-content>
     </ion-view>
   </script>

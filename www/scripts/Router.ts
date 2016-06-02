@@ -25,6 +25,15 @@ module AngularAttack {
             }
           }
         })
+         .state('eventmenu.languages', {
+          url: "/languages",
+          views: {
+            'menuContent': {
+              templateUrl: "templates/languages.html",
+              controller: "LanguagesCtrl"
+            }
+          }
+        })
         .state('eventmenu.checkin', {
           url: "/check-in",
           views: {
@@ -34,19 +43,23 @@ module AngularAttack {
             }
           }
         })
-        .state('eventmenu.languages', {
-          url: "/languages",
-          views: {
-            'menuContent': {
-              templateUrl: "templates/languages.html",
-              controller: "LanguagesCtrl"
+     .state('eventmenu.checkin.auto', {
+        url: "/auto",
+        views: {
+            'connect-hue': {
+                templateUrl: "templates/about-auto.html"
             }
-          }
-        })
-
-
+        }
+    })    
+    .state('eventmenu.checkin.manual', {
+        url: "/manual",
+        views: {
+            'connect-hue': {
+                templateUrl: "templates/about-manual.html"
+            }
+        }
+    });
       $urlRouteProvider.otherwise("/event/home");
-      //endregion
-    }
+     }
   }
 }

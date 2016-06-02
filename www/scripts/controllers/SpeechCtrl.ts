@@ -17,8 +17,8 @@ module AngularAttack.Controllers {
                     templateUrl: "templates/loading.html",
                     animation: 'fade-in'
                 });
-                   var recognition = new SpeechRecognition(); //on computer
-               // var recognition = new webkitSpeechRecognition();//on device
+                   var recognition = new SpeechRecognition(); //on device
+               // var recognition = new webkitSpeechRecognition();//on computer
                 var selectedLanguage = GetterSetterService.getXxx();
                 if (typeof (selectedLanguage) === "string") {
                     if (selectedLanguage == "Hindi") {

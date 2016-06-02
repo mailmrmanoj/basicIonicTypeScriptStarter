@@ -18,7 +18,7 @@ module AngularAttack {
                 location.href = "index.html#/home"; 
             }
             
-            /*RestangularProvider.setBaseUrl('http://192.168.1.165:90/common/');
+            /*RestangularProvider.setBaseUrl('url');
              RestangularProvider.setDefaultHeaders({ apiKey: "Hello_From_Ionic" });*/
         }
          //region confg and run methods implementation

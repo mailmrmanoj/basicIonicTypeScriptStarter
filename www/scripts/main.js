@@ -53,6 +53,15 @@ var AngularAttack;
                     }
                 }
             })
+                .state('eventmenu.languages', {
+                url: "/languages",
+                views: {
+                    'menuContent': {
+                        templateUrl: "templates/languages.html",
+                        controller: "LanguagesCtrl"
+                    }
+                }
+            })
                 .state('eventmenu.checkin', {
                 url: "/check-in",
                 views: {
@@ -62,17 +71,23 @@ var AngularAttack;
                     }
                 }
             })
-                .state('eventmenu.languages', {
-                url: "/languages",
+                .state('eventmenu.checkin.auto', {
+                url: "/auto",
                 views: {
-                    'menuContent': {
-                        templateUrl: "templates/languages.html",
-                        controller: "LanguagesCtrl"
+                    'connect-hue': {
+                        templateUrl: "templates/about-auto.html"
+                    }
+                }
+            })
+                .state('eventmenu.checkin.manual', {
+                url: "/manual",
+                views: {
+                    'connect-hue': {
+                        templateUrl: "templates/about-manual.html"
                     }
                 }
             });
             $urlRouteProvider.otherwise("/event/home");
-            //endregion
         };
         return Router;
     }());
@@ -233,6 +248,20 @@ var AngularAttack;
 (function (AngularAttack) {
     var Controllers;
     (function (Controllers) {
+        var ConnectCtrl = (function () {
+            function ConnectCtrl($scope, $document, $ionicSideMenuDelegate) {
+            }
+            ConnectCtrl.$inject = ["$scope", "$document", "$ionicSideMenuDelegate"];
+            return ConnectCtrl;
+        }());
+        Controllers.ConnectCtrl = ConnectCtrl;
+    })(Controllers = AngularAttack.Controllers || (AngularAttack.Controllers = {}));
+})(AngularAttack || (AngularAttack = {}));
+///<reference path="Reference.ts"/>
+var AngularAttack;
+(function (AngularAttack) {
+    var Controllers;
+    (function (Controllers) {
         var CheckinCtrl = (function () {
             function CheckinCtrl($scope, $stateParams, Chats) {
                 $scope.showForm = true;
@@ -275,8 +304,8 @@ var AngularAttack;
                         templateUrl: "templates/loading.html",
                         animation: 'fade-in'
                     });
-                    var recognition = new SpeechRecognition(); //on computer
-                    // var recognition = new webkitSpeechRecognition();//on device
+                    var recognition = new SpeechRecognition(); //on device
+                    // var recognition = new webkitSpeechRecognition();//on computer
                     var selectedLanguage = GetterSetterService.getXxx();
                     if (typeof (selectedLanguage) === "string") {
                         if (selectedLanguage == "Hindi") {
@@ -320,6 +349,7 @@ var AngularAttack;
 ///<reference path="../Reference.ts"/>
 ///<reference path="MainCtrl.ts"/>
 /// <reference path="LanguagesCtrl.ts"/> 
+/// <reference path="ConnectCtrl.ts"/> 
 ///<reference path="CheckinCtrl.ts"/>
 ///<reference path="SpeechCtrl.ts"/>
 ///<reference path="Reference.ts"/>
