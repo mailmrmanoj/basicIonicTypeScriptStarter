@@ -68,3 +68,7 @@ html,body{
 .boldText{
     font-weight: bold;
 }
+
+.tab-item.tab-item-active, .tab-item.active, .tab-item.activated {
+    color: red;
+}
