@@ -29,14 +29,14 @@
   <ion-nav-view></ion-nav-view>
 
   <script id="templates/home.html" type="text/ng-template">
+    <!--<ion-view view-title="SpeakHue">
     <ion-view view-title="SpeakHue">
     <div class="bar bar-header  bar-positive">
         <h1 class="title">SpeakHue</h1>
     </div>
     <div class="cover">
         <span class="icon microphone" ng-click="record()"></span>
-    </div>
- 
+    </div> 
 </ion-view>
   </script>
 
@@ -61,9 +61,7 @@
     </ion-view>
   </script>
 
-  <script id="templates/check-in.html" type="text/ng-template">
-    <data-ng-include src="'templates/checkIn.html'"></data-ng-include>
-  </script>
+
   <script id="templates/check-in.html" type="text/ng-template">
     <ion-view title="About">
       <div class="tabs-striped tabs-top tabs-background-stable">
@@ -83,14 +81,19 @@
   <script id="templates/about-auto.html" type="text/ng-template">
     <ion-view title="About Page 1">
       <ion-content class="padding has-tabs-top">
-        About Page 1
+        <p>Press the button on the Hue Bridge, then select "Auto Connect".</p>
+        <button class="yellow" onclick="app.connectAuto()">AUTO CONNECT</button>       
+        <p class="lead">Status: <span id="status">Not Connected</span></p>
       </ion-content>
     </ion-view>
   </script>
   <script id="templates/about-manual.html" type="text/ng-template">
     <ion-view title="About Page 2">
       <ion-content class="padding has-tabs-top">
-        About Page 2
+       <h2>Manual connect by IP-address</h2>
+        <input id="HueBridgeIpAddress" value="192.168.0.x" type="url" />
+        <br/>
+        <button class="stone" onclick="app.connectToIP()">CONNECT</button>
       </ion-content>
     </ion-view>
   </script>
