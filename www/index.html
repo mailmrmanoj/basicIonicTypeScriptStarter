@@ -21,6 +21,7 @@
 
   <!-- cordova script (this will be a 404 during development) -->
   <script src="cordova.js"></script>
+  <script src="js/app.js"></script>
   <script src="scripts/main.js"></script>
 </head>
 
@@ -60,9 +61,8 @@
     </ion-view>
   </script>
 
-
   <script id="templates/check-in.html" type="text/ng-template">
-    <ion-view title="About">
+    <ion-view title="Connect">
       <div class="tabs-striped tabs-top tabs-background-stable">
         <div class="tabs">
           <a class="tab-item" ui-sref="eventmenu.checkin.auto">
@@ -81,7 +81,7 @@
     <ion-view title="About Page 1">
       <ion-content class="padding has-tabs-top">
         <p>Press the button on the Hue Bridge, then select "Auto Connect".</p>
-        <button class="yellow" onclick="app.connectAuto()">AUTO CONNECT</button>       
+        <button class="button button-calm" onclick="app.connectAuto()"> Auto Connect</button>
         <p class="lead">Status: <span id="status">Not Connected</span></p>
       </ion-content>
     </ion-view>
@@ -89,10 +89,11 @@
   <script id="templates/about-manual.html" type="text/ng-template">
     <ion-view title="About Page 2">
       <ion-content class="padding has-tabs-top">
-       <h2>Manual connect by IP-address</h2>
-        <input id="HueBridgeIpAddress" value="192.168.0.x" type="url" />
+        <h2>Manual connect by IP-address</h2>
+        <label class="item item-input">
+        <input id="HueBridgeIpAddress" value="192.168.0.x" type="url" />  </label>
         <br/>
-        <button class="stone" onclick="app.connectToIP()">CONNECT</button>
+        <button class="button button-calm" onclick="app.connectToIP()">Connect</button>
       </ion-content>
     </ion-view>
   </script>
