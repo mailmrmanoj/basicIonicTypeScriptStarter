@@ -17,6 +17,7 @@
   <!-- ionic/angularjs js -->
   <script src="lib/ionic/js/ionic.bundle.js"></script>
   <script type="text/javascript" src="lib/restangular/dist/restangular.min.js"></script>
+  <script type="text/javascript" src="lib/angular-resource/angular-resource.min.js"></script>
   <script type="text/javascript" src="lib/lodash/dist/lodash.min.js"></script>
 
   <!-- cordova script (this will be a 404 during development) -->
@@ -82,8 +83,12 @@
     <ion-view title="About Page 1">
       <ion-content class="padding has-tabs-top">
         <p>Press the button on the Hue Bridge, then select "Auto Connect".</p>
-        <button class="button button-calm" onclick="app.connectAuto()"> Auto Connect</button>
-        <p class="lead">Status: <span id="status">Not Connected</span></p>
+        <!--<button class="button button-calm" onclick="app.connectAuto()"> Auto Connect</button>-->
+        <button class="button button-calm" ng-click="connectAuto()"> Auto Connect</button>
+        <p class="lead">Status:
+           <span ng-if="isConnected">Connected</span>
+           <span ng-if="!isConnected">Not Connected</span>
+           </p>
       </ion-content>
     </ion-view>
   </script>
@@ -92,9 +97,10 @@
       <ion-content class="padding has-tabs-top">
         <h2>Manual connect by IP-address</h2>
         <label class="item item-input">
-        <input id="HueBridgeIpAddress" value="192.168.0.x" type="url" />  </label>
+        <input id="HueBridgeIpAddress" placeholder="192.168.0.x" type="text" ng-model="manualAddress"/>  </label>
         <br/>
-        <button class="button button-calm" onclick="app.connectToIP()">Connect</button>
+        <button class="button button-calm" ng-click="manualConnect(manualAddress)">Connect</button>
+        <!--<button class="button button-calm" onclick="app.connectToIP()">Connect</button>-->
       </ion-content>
     </ion-view>
   </script>

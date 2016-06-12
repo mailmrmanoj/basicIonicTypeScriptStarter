@@ -7,7 +7,7 @@ module AngularAttack {
         module: ng.IModule;
 
         constructor() {
-            var dependencies = ["ionic",AngularAttack.AngularAttackConstants.DIRECTIVES, AngularAttack.AngularAttackConstants.CONTROLLERS, AngularAttack.AngularAttackConstants.SERVICES,AngularAttack.AngularAttackConstants.FACTORIES,"restangular","ui.router"];
+            var dependencies = ["ionic",AngularAttack.AngularAttackConstants.DIRECTIVES, AngularAttack.AngularAttackConstants.CONTROLLERS, AngularAttack.AngularAttackConstants.SERVICES,AngularAttack.AngularAttackConstants.FACTORIES,"restangular","ngResource","ui.router"];
 
             //dependencies = dependencies.concat(window.reactoreConfigurations.moduleConfig.dependencies);
             this.module = angular.module(AngularAttack.AngularAttackConstants.MODULE, dependencies);

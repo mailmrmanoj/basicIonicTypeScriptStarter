@@ -75,7 +75,8 @@ var AngularAttack;
                 url: "/auto",
                 views: {
                     'connect-hue': {
-                        templateUrl: "templates/about-auto.html"
+                        templateUrl: "templates/about-auto.html",
+                        controller: "ConnectCtrl"
                     }
                 }
             })
@@ -83,7 +84,8 @@ var AngularAttack;
                 url: "/manual",
                 views: {
                     'connect-hue': {
-                        templateUrl: "templates/about-manual.html"
+                        templateUrl: "templates/about-manual.html",
+                        controller: "ConnectCtrl"
                     }
                 }
             });
@@ -249,9 +251,28 @@ var AngularAttack;
     var Controllers;
     (function (Controllers) {
         var ConnectCtrl = (function () {
-            function ConnectCtrl($scope, $document, $ionicSideMenuDelegate) {
+            function ConnectCtrl($scope, $document, ConnnectService) {
+                $scope.connectAuto = function () {
+                    var connectStatus = ConnnectService.connectAuto();
+                    if (connectStatus) {
+                        $scope.isConnected = true;
+                    }
+                    else {
+                        $scope.isConnected = false;
+                    }
+                };
+                $scope.manualConnect = function (manualAddress) {
+                    ConnnectService.setHueBridgeIpAddress(parseInt(manualAddress));
+                    var connectStatusManual = ConnnectService.connect(parseInt(manualAddress));
+                    if (connectStatusManual) {
+                        $scope.isConnected = true;
+                    }
+                    else {
+                        $scope.isConnected = false;
+                    }
+                };
             }
-            ConnectCtrl.$inject = ["$scope", "$document", "$ionicSideMenuDelegate"];
+            ConnectCtrl.$inject = ["$scope", "$document", "ConnnectService"];
             return ConnectCtrl;
         }());
         Controllers.ConnectCtrl = ConnectCtrl;
@@ -277,7 +298,7 @@ var AngularAttack;
     var Controllers;
     (function (Controllers) {
         var SpeechCtrl = (function () {
-            function SpeechCtrl($scope, $timeout, GetterSetterService, $ionicLoading, $ionicPopup) {
+            function SpeechCtrl($scope, $timeout, GetterSetterService, ConnnectService, $ionicLoading, $ionicPopup) {
                 $scope.recognizedText = '';
                 function callAtTimeout() {
                     if ($scope.recognizedText.length <= 0) {
@@ -285,6 +306,7 @@ var AngularAttack;
                     }
                 }
                 $scope.record = function () {
+                    triggerAction("on");
                     $ionicLoading.show({
                         templateUrl: "templates/loading.html",
                         animation: 'fade-in'
@@ -320,12 +342,30 @@ var AngularAttack;
                         noBackdrop: true
                     });
                     alertPopup.then(function (res) {
-                        console.log('Thank you');
+                        triggerAction(text);
                     });
                 }
                 ;
+                function triggerAction(text) {
+                    text = text.toUpperCase();
+                    if (text == "ON") {
+                        ConnnectService.lightOn();
+                    }
+                    if (text == "OFF") {
+                        ConnnectService.lightOff();
+                    }
+                    if (text == "Change colour") {
+                        ConnnectService.lightsSetColor1();
+                    }
+                    if (text == "Festive") {
+                        ConnnectService.lightsSetColor2();
+                    }
+                    if (text == "Party") {
+                        ConnnectService.lightsSetColor3();
+                    }
+                }
             }
-            SpeechCtrl.$inject = ["$scope", "$timeout", "GetterSetterService", "$ionicLoading", "$ionicPopup"];
+            SpeechCtrl.$inject = ["$scope", "$timeout", "GetterSetterService", "ConnnectService", "$ionicLoading", "$ionicPopup"];
             return SpeechCtrl;
         }());
         Controllers.SpeechCtrl = SpeechCtrl;
@@ -361,9 +401,194 @@ var AngularAttack;
     })(Services = AngularAttack.Services || (AngularAttack.Services = {}));
 })(AngularAttack || (AngularAttack = {}));
 ///<reference path="Reference.ts"/>
+var AngularAttack;
+(function (AngularAttack) {
+    var Services;
+    (function (Services) {
+        var RESTService = (function () {
+            function RESTService($resource) {
+                var Project = $resource('https://api.mongolab.com/api/1/databases' +
+                    '/angularjs/collections/projects/:id', { apiKey: '4f847ad3e4b08a2eed5f3b54' }, {
+                    update: { method: 'PUT' }
+                });
+                Project.prototype.update = function (cb) {
+                    return Project.update({ id: this._id.$oid }, angular.extend({}, this, { _id: undefined }), cb);
+                };
+                Project.prototype.destroy = function (cb) {
+                    return Project.remove({ id: this._id.$oid }, cb);
+                };
+            }
+            RESTService.$inject = ["$resource"];
+            return RESTService;
+        }());
+        Services.RESTService = RESTService;
+    })(Services = AngularAttack.Services || (AngularAttack.Services = {}));
+})(AngularAttack || (AngularAttack = {}));
+///<reference path="Reference.ts"/>
+var AngularAttack;
+(function (AngularAttack) {
+    var Services;
+    (function (Services) {
+        var ConnnectService = (function () {
+            function ConnnectService(resource, $http) {
+                // JavaScript code for the "Philips Hue Demo" example app.
+                /** Application object. */
+                var app = {};
+                /** User name (you can change this, must be at least 10 characters). */
+                app.user = 'evo1234567';
+                /** Default light. */
+                app.lightId = 1;
+                /** IP-address of the Hue Bridge. */
+                app.bridgeIP = null;
+                /**
+                 * Define colors that the lights can be configured with.
+                 * The colour buttons are set to these colours.
+                 */
+                app.hueColors = [
+                    { 'hue': 1000, 'bri': 75, 'sat': 250 },
+                    { 'hue': 10000, 'bri': 75, 'sat': 250 },
+                    { 'hue': 30000, 'bri': 75, 'sat': 250 }
+                ];
+                return {
+                    getHueBridgeIpAddress: function (ipaddress) {
+                        return app.bridgeIP || ipaddress;
+                    },
+                    setHueBridgeIpAddress: function (ipaddress) {
+                        app.bridgeIP = ipaddress;
+                    },
+                    connectAuto: function (ipaddress) {
+                        return this.fetchBridgeIP(function (ipaddress) {
+                            this.setHueBridgeIpAddress(ipaddress);
+                            this.connect();
+                        });
+                    },
+                    connectToIP: function () {
+                        this.connect();
+                    },
+                    fetchBridgeIP: function (successFun, failFun) {
+                        $.getJSON('https://www.meethue.com/api/nupnp', function (data) {
+                            if (data[0] && data[0].hasOwnProperty('internalipaddress')) {
+                                successFun && successFun(data[0].internalipaddress);
+                            }
+                            else {
+                                failFun && failFun('Could not find ipaddress');
+                            }
+                        }).fail(failFun);
+                    },
+                    checkConnection: function (successFun, failFun) {
+                        $.ajax({
+                            type: 'GET',
+                            dataType: 'json',
+                            url: 'http://' +
+                                this.getHueBridgeIpAddress() + '/api/' +
+                                this.user + '/config',
+                            success: successFun,
+                            error: function (a, err) { failFun(err); }
+                        });
+                    },
+                    registerUser: function (userName, successFun, failFun, ipAddress) {
+                        var data = { "devicetype": "test user", "username": userName };
+                        $.ajax({
+                            type: 'POST',
+                            dataType: 'json',
+                            timeout: 3000,
+                            url: 'http://' + this.getHueBridgeIpAddress(ipAddress) + '/api/',
+                            data: JSON.stringify(data),
+                            success: function (data) { successFun(data); },
+                            error: function (a, err) { failFun(err); }
+                        });
+                    },
+                    connect: function (ipaddress) {
+                        $('#status').html('Connecting...');
+                        this.registerUser(app.user, function (json) {
+                            console.log(json[0]);
+                            if (json[0].error) {
+                                $('#status').html(json[0].error.description);
+                            }
+                            else if (json[0].success) {
+                                $('#status').html('Connected');
+                            }
+                            else {
+                                $('#status').html('Something went wrong');
+                            }
+                        }, function () {
+                            $('#status').html('Could not find Hue Bridge');
+                        }, ipaddress);
+                    },
+                    selectLight: function (lightId) {
+                        app.lightId = lightId;
+                    },
+                    lightOn: function () {
+                        this.lightSetState(app.lightId, { "on": true });
+                    },
+                    lightOff: function () {
+                        this.lightSetState(app.lightId, { "on": false });
+                    },
+                    lightsSetColor1: function () {
+                        this.lightSetState(app.lightId, app.hueColors[0]);
+                    },
+                    lightsSetColor2: function () {
+                        this.lightSetState(app.lightId, app.hueColors[1]);
+                    },
+                    lightsSetColor3: function () {
+                        this.lightSetState(app.lightId, app.hueColors[2]);
+                    },
+                    lightsEffectOn: function () {
+                        this.lightSetState(app.lightId, { "effect": "colorloop" });
+                    },
+                    lightsEffectOff: function () {
+                        this.lightSetState(app.lightId, { "effect": "none" });
+                    },
+                    lightSetState: function (lightId, state) {
+                        var ipAddress = '192.168.1.' + this.getHueBridgeIpAddress();
+                        $.ajax({
+                            type: 'PUT',
+                            dataType: 'json',
+                            url: 'http://' + parseInt(ipAddress) + '/api/' +
+                                app.user + '/lights/' + lightId + '/state',
+                            data: JSON.stringify(state),
+                            success: function (data) { },
+                            error: function (a, err) { }
+                        });
+                    },
+                    setSixScore3: function (hue, state, bri) {
+                        var req2 = {
+                            method: 'PUT',
+                            url: 'http://192.168.1.102/api/ceb443411ac286f16012a5c25fcc5d7/lights/3/state',
+                            data: {
+                                "hue": hue,
+                                "on": state,
+                                "bri": bri
+                            }
+                        };
+                        // $http returns a promise, which has a then function, which also returns a promise
+                        var helloPromise3 = $http(req2).then(function (response) {
+                            // The then function here is an opportunity to modify the response
+                            console.log("big" + response);
+                            // The return value gets picked up by the then in the controller.
+                            //
+                            // je ne sais pas ou il pioche le terme data
+                            // peut etre une expression de Angular
+                            //
+                            return response.data;
+                        });
+                        // Return the promise to the controller
+                        return helloPromise3;
+                    }
+                };
+            }
+            ConnnectService.$inject = ["$resource", "$http"];
+            return ConnnectService;
+        }());
+        Services.ConnnectService = ConnnectService;
+    })(Services = AngularAttack.Services || (AngularAttack.Services = {}));
+})(AngularAttack || (AngularAttack = {}));
+///<reference path="Reference.ts"/>
 angular.module(AngularAttack.AngularAttackConstants.SERVICES, []).service(AngularAttack.Services);
 ///<reference path="../Reference.ts"/>
 ///<reference path="GetterSetterService.ts"/>
+///<reference path="RESTService.ts"/>
+///<reference path="ConnectService.ts"/>
 ///<reference path="Services.ts"/>
 ///<reference path="Reference.ts"/>
 var AngularAttack;
@@ -419,7 +644,7 @@ var AngularAttack;
                     }
                 });
             };
-            var dependencies = ["ionic", AngularAttack.AngularAttackConstants.DIRECTIVES, AngularAttack.AngularAttackConstants.CONTROLLERS, AngularAttack.AngularAttackConstants.SERVICES, AngularAttack.AngularAttackConstants.FACTORIES, "restangular", "ui.router"];
+            var dependencies = ["ionic", AngularAttack.AngularAttackConstants.DIRECTIVES, AngularAttack.AngularAttackConstants.CONTROLLERS, AngularAttack.AngularAttackConstants.SERVICES, AngularAttack.AngularAttackConstants.FACTORIES, "restangular", "ngResource", "ui.router"];
             //dependencies = dependencies.concat(window.reactoreConfigurations.moduleConfig.dependencies);
             this.module = angular.module(AngularAttack.AngularAttackConstants.MODULE, dependencies);
             var router = new AngularAttack.Router();

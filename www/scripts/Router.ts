@@ -25,7 +25,7 @@ module AngularAttack {
             }
           }
         })
-         .state('eventmenu.languages', {
+        .state('eventmenu.languages', {
           url: "/languages",
           views: {
             'menuContent': {
@@ -43,23 +43,25 @@ module AngularAttack {
             }
           }
         })
-     .state('eventmenu.checkin.auto', {
-        url: "/auto",
-        views: {
+        .state('eventmenu.checkin.auto', {
+          url: "/auto",
+          views: {
             'connect-hue': {
-                templateUrl: "templates/about-auto.html"
+              templateUrl: "templates/about-auto.html",
+              controller: "ConnectCtrl"
             }
-        }
-    })    
-    .state('eventmenu.checkin.manual', {
-        url: "/manual",
-        views: {
+          }
+        })
+        .state('eventmenu.checkin.manual', {
+          url: "/manual",
+          views: {
             'connect-hue': {
-                templateUrl: "templates/about-manual.html"
+              templateUrl: "templates/about-manual.html",
+              controller: "ConnectCtrl"
             }
-        }
-    });
+          }
+        });
       $urlRouteProvider.otherwise("/event/home");
-     }
+    }
   }
 }

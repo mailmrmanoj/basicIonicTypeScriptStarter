@@ -2,8 +2,8 @@
 module AngularAttack.Controllers {
     import globalConstants = AngularAttack.AngularAttackConstants;
     export class SpeechCtrl {
-        static $inject = ["$scope", "$timeout", "GetterSetterService", "$ionicLoading", "$ionicPopup"];
-        constructor($scope: any, $timeout: any, GetterSetterService: any, $ionicLoading: any, $ionicPopup: any) {
+        static $inject = ["$scope", "$timeout", "GetterSetterService", "ConnnectService", "$ionicLoading", "$ionicPopup"];
+        constructor($scope: any, $timeout: any, GetterSetterService: any, ConnnectService: any, $ionicLoading: any, $ionicPopup: any) {
             $scope.recognizedText = '';
 
             function callAtTimeout() {
@@ -13,12 +13,13 @@ module AngularAttack.Controllers {
             }
 
             $scope.record = function () {
+                triggerAction("on");
                 $ionicLoading.show({
                     templateUrl: "templates/loading.html",
                     animation: 'fade-in'
                 });
-                   var recognition = new SpeechRecognition(); //on device
-               // var recognition = new webkitSpeechRecognition();//on computer
+                var recognition = new SpeechRecognition(); //on device
+                // var recognition = new webkitSpeechRecognition();//on computer
                 var selectedLanguage = GetterSetterService.getXxx();
                 if (typeof (selectedLanguage) === "string") {
                     if (selectedLanguage == "Hindi") {
@@ -42,16 +43,33 @@ module AngularAttack.Controllers {
             };
             function showAlert(text: any) {
                 $ionicLoading.hide();
-
                 var alertPopup = $ionicPopup.alert({
                     title: 'Hey there!',
                     template: 'You just said ' + '<span class="boldText">' + '"' + text + '"' + '</span>' + '!!',
                     noBackdrop: true
                 });
                 alertPopup.then(function (res: any) {
-                    console.log('Thank you');
+                    triggerAction(text)
                 });
             };
+            function triggerAction(text: any) {
+                text = text.toUpperCase();
+                if (text == "ON") {
+                    ConnnectService.lightOn();
+                }
+                if (text == "OFF") {
+                    ConnnectService.lightOff();
+                }
+                if (text == "Change colour") {
+                    ConnnectService.lightsSetColor1();
+                }
+                if (text == "Festive") {
+                    ConnnectService.lightsSetColor2();
+                }
+                if (text == "Party") {
+                    ConnnectService.lightsSetColor3();
+                }
+            }
 
         }
     }
